@@ -371,6 +371,21 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
             break;
 
+        case 32: /* d or AudioMute */
+            x_scancode = is_ext ? 173 : 40 /* d */;
+            sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+            break;
+
+        case 46: /* c or AudioLowerVolume */
+            x_scancode = is_ext ? 174 : 54 /* c */;
+            senddownupkeyevent(keyboard->device, type, x_scancode);
+            break;
+
+        case 48: /* b or AudioRaiseVolume */
+            x_scancode = is_ext ? 175 : 56 /* b */;
+            senddownupkeyevent(keyboard->device, type, x_scancode);
+            break;
+
         case 28: /* Enter or Return */
             x_scancode = is_ext ? 108 : 36;
             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
