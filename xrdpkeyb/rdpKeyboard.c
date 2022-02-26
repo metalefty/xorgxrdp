@@ -211,6 +211,9 @@ static KeySym g_kbdMap[] =
 static int
 rdpLoadLayout(rdpKeyboard *keyboard, struct xrdp_client_info *client_info);
 
+static CARD32
+rdpInDeferredReleaseCapsLockCallback(OsTimerPtr timer, CARD32 now, pointer arg);
+
 /******************************************************************************/
 static void
 rdpEnqueueKey(DeviceIntPtr device, int type, int scancode)
@@ -302,8 +305,9 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
 		 *  Workaround for neutrinolabs/xrdp#2158
 		 */
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
-		LLOGLN(0, ("KbdAddEvent: Workaround for neutrinolabs/xrdp#2158, releasing "));
-                rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
+                LLOGLN(0, ("KbdAddEvent: Workaround for neutrinolabs/xrdp#2158, releasing "));
+                //rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
+                TimerSet(NULL, 0, 3000, rdpInDeferredReleaseCapsLockCallback, keyboard->device);
 	    }
 
 	    break;
@@ -318,14 +322,6 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
             {
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
             }
-
-	    if (x_scancode == 58 + MIN_KEY_CODE)
-	    {
-                LLOGLN(0, ("XkbdAddEvent: releasing 58"));
-                rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
-	    }
-
-
             break;
 
         case 56: /* left - right alt button */
@@ -653,6 +649,36 @@ rdpInDeferredRepeatCallback(OsTimerPtr timer, CARD32 now, pointer arg)
     if (found)
     {
         XkbSetRepeatKeys(pDev, -1, AutoRepeatModeOff);
+    }
+    return 0;
+}
+
+/******************************************************************************/
+static CARD32
+rdpInDeferredReleaseCapsLockCallback(OsTimerPtr timer, CARD32 now, pointer arg)
+{
+    DeviceIntPtr pDev;
+    DeviceIntPtr it;
+    Bool found;
+
+    LLOGLN(0, ("rdpInDeferredReleaseCapsLockCallback:"));
+    TimerFree(timer);
+    pDev = (DeviceIntPtr) arg;
+    found = FALSE;
+    it = inputInfo.devices;
+    while (it != NULL)
+    {
+        if (it == pDev)
+        {
+            found = TRUE;
+            break;
+        }
+        it = it->next;
+    }
+    if (found)
+    {
+        LLOGLN(0, ("rdpInDeferredReleaseCapsLockCallback: 3000 ms release capslock"));
+        rdpEnqueueKey(pDev, KeyRelease, 66); /* Release CapsLock */
     }
     return 0;
 }
