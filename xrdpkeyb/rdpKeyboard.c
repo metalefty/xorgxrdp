@@ -288,6 +288,8 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
     is_spe = param4 & 512; /* 0x200 */
     x_scancode = 0;
 
+    LLOGLN(0, ("KbdAddEvent: rdp_scancode=%d", rdp_scancode));
+
     switch (rdp_scancode)
     {
         case 58: /* caps lock             */
