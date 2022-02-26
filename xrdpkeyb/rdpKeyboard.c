@@ -215,6 +215,7 @@ rdpLoadLayout(rdpKeyboard *keyboard, struct xrdp_client_info *client_info);
 static void
 rdpEnqueueKey(DeviceIntPtr device, int type, int scancode)
 {
+    LLOGLN(0, ("rdpEnqueueKey: type=%d, scancode=%d", type, scancode));
     if (type == KeyPress)
     {
         xf86PostKeyboardEvent(device, scancode, TRUE);
