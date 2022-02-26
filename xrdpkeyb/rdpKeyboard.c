@@ -306,6 +306,13 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
             }
 
+	    if (x_scancode == 58 + MIN_KEY_CODE)
+	    {
+                LLOGLN(0, ("XkbdAddEvent: releasing 58"));
+                rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
+	    }
+
+
             break;
 
         case 56: /* left - right alt button */
