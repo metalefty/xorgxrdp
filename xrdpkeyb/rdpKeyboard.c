@@ -294,6 +294,19 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
     switch (rdp_scancode)
     {
         case 58: /* caps lock             */
+            x_scancode = rdp_scancode + MIN_KEY_CODE;
+
+	    if (x_scancode > 0)
+	    {
+                /**
+		 *  Workaround for neutrinolabs/xrdp#2158
+		 */
+                rdpEnqueueKey(keyboard->device, type, x_scancode);
+		LLOGLN(0, ("KbdAddEvent: Workaround for neutrinolabs/xrdp#2158, releasing "));
+                rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
+	    }
+
+	    break;
         case 42: /* left shift            */
         case 54: /* right shift           */
         case 70: /* scroll lock           */
