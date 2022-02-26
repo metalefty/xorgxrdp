@@ -527,6 +527,7 @@ rdpInputKeyboard(rdpPtr dev, int msg, long param1, long param2,
     {
         case 15: /* key down */
         case 16: /* key up */
+            LLOGLN(0,( "rdpInputKeyboard: msg=%d, params=%ld,%ld,%ld,%ld", param1, param2, param3, param4));
             KbdAddEvent(keyboard, msg == 15, param1, param2, param3, param4);
             break;
         case 17: /* from RDP_INPUT_SYNCHRONIZE */
