@@ -307,7 +307,10 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
                 LLOGLN(0, ("KbdAddEvent: Workaround for neutrinolabs/xrdp#2158, releasing "));
                 //rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
-                TimerSet(NULL, 0, 3000, rdpInDeferredReleaseCapsLockCallback, keyboard->device);
+		if (type == KeyPress)
+		{
+                    TimerSet(NULL, 0, 2000, rdpInDeferredReleaseCapsLockCallback, keyboard->device);
+		}
 	    }
 
 	    break;
