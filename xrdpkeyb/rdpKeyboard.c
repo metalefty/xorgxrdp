@@ -554,7 +554,7 @@ rdpkeybDeviceInit(DeviceIntPtr pDevice, KeySymsPtr pKeySyms, CARD8 *pModMap)
 
     pModMap[SHIFT_L_KEY_CODE] = ShiftMask;
     pModMap[SHIFT_R_KEY_CODE] = ShiftMask;
-    pModMap[CAPS_LOCK_KEY_CODE] = LockMask;
+    //pModMap[CAPS_LOCK_KEY_CODE] = LockMask;
     pModMap[CONTROL_L_KEY_CODE] = ControlMask;
     pModMap[CONTROL_R_KEY_CODE] = ControlMask;
     pModMap[ALT_L_KEY_CODE] = Mod1Mask;
