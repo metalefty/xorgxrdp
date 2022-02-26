@@ -291,6 +291,32 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
     switch (rdp_scancode)
     {
         case 58: /* caps lock             */
+            x_scancode = rdp_scancode + MIN_KEY_CODE;
+
+            if (x_scancode > 0)
+            {
+                rdpEnqueueKey(keyboard->device, type, x_scancode);
+                LLOGLN(0, ("KbdAddEvent: workaround for neutrinolabs/xrdp#2158, key %d pressed", x_scancode));
+                if (type == KeyPress) /* && keysym == XK_Eisu_toggle */
+                {
+                    /**
+                     * Workaround for neutrinolabs/xrdp#2158
+                     *
+                     * Some clients don't send Eisu_toggle release so release it.
+                     *
+                     * Ideally, this should be done if keysym=XK_Eisu_toggle(0xff30) however
+                     * only keycode is known here. So doing this if keycode=66.
+                     *
+                     * $ xmodmap -pke |grep " 66"
+                     * keycode  66 = Eisu_toggle Caps_Lock Eisu_toggle Caps_Lock Eisu_toggle Caps_Lock
+                     */
+                    LLOGLN(0, ("KbdAddEvent: workaround for neutrionlabs/xrdp#2158, "
+                               "releasing key %d immediately", x_scancode));
+                    rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
+                }
+            }
+
+            break;
         case 42: /* left shift            */
         case 54: /* right shift           */
         case 70: /* scroll lock           */
