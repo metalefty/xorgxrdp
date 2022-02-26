@@ -299,6 +299,8 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
         case 70: /* scroll lock           */
             x_scancode = rdp_scancode + MIN_KEY_CODE;
 
+            LLOGLN(0, ("KbdAddEvent: rdp_scancode=%d, x_scancode=%d, type=%d", rdp_scancode, x_scancode, type));
+
             if (x_scancode > 0)
             {
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
