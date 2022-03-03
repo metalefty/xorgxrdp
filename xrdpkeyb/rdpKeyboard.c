@@ -933,23 +933,30 @@ rdpLoadLayout(rdpKeyboard *keyboard, struct xrdp_client_info *client_info)
 /******************************************************************************/
 static KeySym getKeySym(rdpKeyboard *keyboard, int scanCode)
 {
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
     int keyCode;
     KeySym keySym = NoSymbol;
 
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
     XkbSrvInfoPtr xkbi = keyboard->device->key->xkbInfo;
 
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
     keyCode = (scanCode & 0xff) + MIN_KEY_CODE;
 
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
     if (keyCode >= xkbi->desc->min_key_code &&
         keyCode <= xkbi->desc->max_key_code) {
 
+    LLOGLN(0, ("%s:%d scanCode=%d", __FILE__, __LINE__, scanCode));
         int effectiveGroup = XkbGetEffectiveGroup(xkbi,
                                                   &xkbi->state,
                                                   scanCode);
 
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
 	keySym = XkbKeySym(xkbi->desc, scanCode, effectiveGroup);
     }
 
+    LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
     return keySym;
 }
 
