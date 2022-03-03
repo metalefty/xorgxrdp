@@ -948,12 +948,14 @@ static KeySym getKeySym(rdpKeyboard *keyboard, int scanCode)
         keyCode <= xkbi->desc->max_key_code) {
 
     LLOGLN(0, ("%s:%d scanCode=%d max=%d min=%d", __FILE__, __LINE__, scanCode, xkbi->desc->min_key_code, xkbi->desc->max_key_code));
+    /*
         int effectiveGroup = XkbGetEffectiveGroup(xkbi,
                                                   &xkbi->state,
                                                   scanCode);
+						  */
 
     LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
-	keySym = XkbKeySym(xkbi->desc, scanCode, effectiveGroup);
+	keySym = XkbKeySym(xkbi->desc, scanCode, 0);
     }
 
     LLOGLN(0, ("%s:%d", __FILE__, __LINE__));
