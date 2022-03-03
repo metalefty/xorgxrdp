@@ -211,6 +211,9 @@ static KeySym g_kbdMap[] =
 static int
 rdpLoadLayout(rdpKeyboard *keyboard, struct xrdp_client_info *client_info);
 
+static KeySym
+getKeySym(rdpKeyboard *keyboard, int scancode);
+
 /******************************************************************************/
 static void
 rdpEnqueueKey(DeviceIntPtr device, int type, int scancode)
@@ -281,6 +284,7 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
     int is_ext;
     int is_spe;
     int type;
+    KeySym keySym;
 
     type = down ? KeyPress : KeyRelease;
     rdp_scancode = param3;
@@ -297,7 +301,11 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
             {
                 rdpEnqueueKey(keyboard->device, type, x_scancode);
                 LLOGLN(0, ("KbdAddEvent: workaround for neutrinolabs/xrdp#2158, key %d pressed", x_scancode));
-                if (type == KeyPress) /* && keysym == XK_Eisu_toggle */
+
+		LLOGLN(0, ("KbdAddEvent: getKeySym"));
+                keySym = getKeySym(keyboard, rdp_scancode);
+
+                if (type == KeyPress && keySym == XK_Eisu_toggle) /* && keysym == XK_Eisu_toggle */
                 {
                     /**
                      * Workaround for neutrinolabs/xrdp#2158
@@ -311,7 +319,7 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
                      * keycode  66 = Eisu_toggle Caps_Lock Eisu_toggle Caps_Lock Eisu_toggle Caps_Lock
                      */
                     LLOGLN(0, ("KbdAddEvent: workaround for neutrionlabs/xrdp#2158, "
-                               "releasing key %d immediately", x_scancode));
+                               "releasing key 0x%x immediately", keySym));
                     rdpEnqueueKey(keyboard->device, KeyRelease, x_scancode);
                 }
             }
@@ -920,6 +928,29 @@ rdpLoadLayout(rdpKeyboard *keyboard, struct xrdp_client_info *client_info)
     reload_xkb(inputInfo.keyboard, &set);
 
     return 0;
+}
+
+/******************************************************************************/
+static KeySym getKeySym(rdpKeyboard *keyboard, int scanCode)
+{
+    int keyCode;
+    KeySym keySym = NoSymbol;
+
+    XkbSrvInfoPtr xkbi = keyboard->device->key->xkbInfo;
+
+    keyCode = (scanCode & 0xff) + MIN_KEY_CODE;
+
+    if (keyCode >= xkbi->desc->min_key_code &&
+        keyCode <= xkbi->desc->max_key_code) {
+
+        int effectiveGroup = XkbGetEffectiveGroup(xkbi,
+                                                  &xkbi->state,
+                                                  scanCode);
+
+	keySym = XkbKeySym(xkbi->desc, scanCode, effectiveGroup);
+    }
+
+    return keySym;
 }
 
 /******************************************************************************/
