@@ -304,6 +304,8 @@ KbdAddEvent(rdpKeyboard *keyboard, int down, int param1, int param2,
 
 		LLOGLN(0, ("KbdAddEvent: getKeySym"));
                 keySym = getKeySym(keyboard, rdp_scancode);
+                LLOGLN(0, ("KbdAddEvent: workaround for neutrionlabs/xrdp#2158, "
+                           "releasing key 0x%04x immediately", keySym));
 
                 if (type == KeyPress && keySym == XK_Eisu_toggle) /* && keysym == XK_Eisu_toggle */
                 {
