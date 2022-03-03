@@ -947,7 +947,7 @@ static KeySym getKeySym(rdpKeyboard *keyboard, int scanCode)
     if (keyCode >= xkbi->desc->min_key_code &&
         keyCode <= xkbi->desc->max_key_code) {
 
-    LLOGLN(0, ("%s:%d scanCode=%d", __FILE__, __LINE__, scanCode));
+    LLOGLN(0, ("%s:%d scanCode=%d max=%d min=%d", __FILE__, __LINE__, scanCode, xkbi->desc->min_key_code, xkbi->desc->max_key_code));
         int effectiveGroup = XkbGetEffectiveGroup(xkbi,
                                                   &xkbi->state,
                                                   scanCode);
