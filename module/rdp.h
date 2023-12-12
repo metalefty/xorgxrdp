@@ -134,7 +134,8 @@ struct image_data
     int flags;
     uint8_t *pixels;
     uint8_t *shmem_pixels;
-    int shmem_id;
+    int shmem_fd;
+    int shmem_bytes;
     int shmem_offset;
     int shmem_lineBytes;
 };
