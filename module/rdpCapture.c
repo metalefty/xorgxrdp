@@ -592,6 +592,23 @@ isShmStatusActive(enum shared_memory_status status) {
 }
 
 /******************************************************************************/
+/* copy rects with no error checking */
+static uint64_t
+xxhash64_rfx_tile()
+{
+    int row;
+    uint64_t hash;
+    const uint8_t *s8;
+    hash = seed;
+    for(row = 0; row < 64; row++)
+    {
+        s8 + (y+row) * src_stride + x * 4;
+
+    }
+    return hash;
+}
+
+/******************************************************************************/
 static Bool
 rdpCapture0(rdpClientCon *clientCon, RegionPtr in_reg, BoxPtr *out_rects,
             int *num_out_rects, struct image_data *id)
@@ -956,6 +973,14 @@ rdpCapture2(rdpClientCon *clientCon, RegionPtr in_reg, BoxPtr *out_rects,
                 }
                 else
                 {
+                    /* lazily only do this if hash wasn't identical */
+                    if (rcode != rgnPART)
+                    {
+                        rdpCopyBox_a8r8g8b8_to_yuvalp(x, y,
+                                src, src_stride,
+                                dst, dst_stride,
+                                &rect, 1);
+                    }
                     clientCon->rfx_crcs[mon_index][crc_offset] = crc;
                     (*out_rects)[out_rect_index] = rect;
                     out_rect_index++;
