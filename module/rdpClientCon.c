@@ -799,7 +799,7 @@ rdpClientConResizeAllMemoryAreas(rdpPtr dev, rdpClientCon *clientCon)
             clientCon->cap_stride_bytes = clientCon->cap_width * 4;
             shmemstatus = SHM_RFX_ACTIVE_PENDING;
 
-            dev->msFrameInterval = MIN_MS_BETWEEN_FRAMES_RFX;
+            dev->msFrameInterval = clientCon->client_info.min_ms_between_frames_rfx;
             break;
         case CC_SUF_A2: /* H264 */
         case CC_GFX_A2:
@@ -813,7 +813,7 @@ rdpClientConResizeAllMemoryAreas(rdpPtr dev, rdpClientCon *clientCon)
             clientCon->cap_stride_bytes = clientCon->cap_width * 4;
             shmemstatus = SHM_H264_ACTIVE_PENDING;
 
-            dev->msFrameInterval = MIN_MS_BETWEEN_FRAMES_H264;
+            dev->msFrameInterval = clientCon->client_info.min_ms_between_frames_h264;
             break;
         default:
             LLOGLN(0, ("rdpClientConProcessMsgClientInfo: got normal capture"));
