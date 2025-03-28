@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo scripts/install_xrdp_build_dependencies_with_apt.sh min amd64
+          sudo scripts/install_xorgxrdp_build_dependencies_with_apt.sh amd64
 
       - name: Run make distcheck
         run: |
