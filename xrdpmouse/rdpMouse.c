@@ -58,7 +58,7 @@ xrdp mouse module
 #define LLOGLN(_level, _args) \
     do { if (_level < LOG_LEVEL) { ErrorF _args ; ErrorF("\n"); } } while (0)
 
-static char g_Mouse_str[] = "Mouse";
+static char g_Mouse_str[] = XI_MOUSE;
 static char g_xrdp_mouse_name[] = XRDP_MOUSE_NAME;
 
 /******************************************************************************/
